@@ -318,8 +318,14 @@ uint8_t gc_execute_line(char *line)
 						break;
           case 'X': word_bit = WORD_X; gc_block.values.xyz[X_AXIS] = value; axis_words |= (1<<X_AXIS); break;
           case 'Y': word_bit = WORD_Y; gc_block.values.xyz[Y_AXIS] = value; axis_words |= (1<<Y_AXIS); break;
-          case 'Z': word_bit = WORD_Z; gc_block.values.xyz[Z_AXIS] = value; axis_words |= (1<<Z_AXIS); break;
-          default: FAIL(STATUS_GCODE_UNSUPPORTED_COMMAND);
+         // case 'Z': word_bit = WORD_Z; gc_block.values.xyz[Z_AXIS] = value; axis_words |= (1<<Z_AXIS); break;
+         //mod by NGHIA here to make turning on laser on Z-axis in gcode 
+	  case 'Z':
+           if (value != -1) {word_bit = WORD_S; gc_block.values.s = 0; break;}   //turn off the laser
+	       else {word_bit = WORD_S; gc_block.values.s = 255; break;}	//else turn on the laser	
+			
+	  } 			  
+	  default: FAIL(STATUS_GCODE_UNSUPPORTED_COMMAND);
         }
 
         // NOTE: Variable 'word_bit' is always assigned, if the non-command letter is valid.
